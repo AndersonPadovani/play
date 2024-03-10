@@ -7,7 +7,7 @@ export default function FakeApi() {
                 category: "Pizza",
                 name: "Margherita",
                 star: 4.5,
-                disponivel: true,
+                disponivel: false,
                 description:
                     "Molho de tomate, mussarela fresca, manjericão e azeite de oliva.",
             },

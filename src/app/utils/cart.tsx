@@ -1,50 +1,51 @@
-import { DrinkItem, PizzaItem } from "@/types/typesCart";
+// cart.ts
+
+type CartItem = {
+    id: number;
+    quantity: number;
+    data: Record<string, any>; // Objeto que representa o item no carrinho
+};
 
 export class Cart {
-    private items: (PizzaItem | DrinkItem)[] = [];
+    private static CART_KEY = "CARTSHOP";
+
+    private items: CartItem[];
 
     constructor() {
-        this.loadFromLocalStorage();
+        // Carregando itens do localStorage
+        const storedCart = localStorage.getItem(Cart.CART_KEY);
+        this.items = storedCart ? JSON.parse(storedCart) : [];
     }
 
-    add(item: PizzaItem | DrinkItem) {
-        this.items.push(item);
+    private saveToLocalStorage() {
+        localStorage.setItem(Cart.CART_KEY, JSON.stringify(this.items));
+    }
+
+    addItem(item: CartItem["data"]) {
+        const existingItem = this.items.find(
+            (cartItem) => cartItem.id === item.id
+        );
+
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            this.items.push({ id: item.id, quantity: 1, data: item });
+        }
+
         this.saveToLocalStorage();
     }
 
-    remove(item: PizzaItem | DrinkItem) {
-        const index = this.items.indexOf(item);
-        if (index !== -1) {
-            this.items.splice(index, 1);
-            this.saveToLocalStorage();
-        }
-    }
-
-    removeById(id: number) {
+    removeItem(id: number) {
         this.items = this.items.filter((item) => item.id !== id);
         this.saveToLocalStorage();
     }
 
+    getQuantidadeById(id: number): number {
+        const item = this.items.find((cartItem) => cartItem.id === id);
+        return item ? item.quantity : 0;
+    }
+
     getItems() {
-        return this.items;
-    }
-
-    getTotalItems() {
-        return this.items.length;
-    }
-
-    getQuantityById(id: number): number {
-        return this.items.filter((item) => item.id === id).length;
-    }
-
-    private saveToLocalStorage() {
-        localStorage.setItem("cartItems", JSON.stringify(this.items));
-    }
-
-    private loadFromLocalStorage() {
-        const storedItems = localStorage.getItem("cartItems");
-        if (storedItems) {
-            this.items = JSON.parse(storedItems);
-        }
+        return this.items.map((item) => item.data);
     }
 }
