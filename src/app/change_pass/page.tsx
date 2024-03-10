@@ -19,10 +19,14 @@ export default function Page({
 
     const { toast } = useToast();
 
-    const validaSenhas = (event: ChangeEvent<HTMLInputElement> | undefined) => {
-        const password = document.getElementById("password")!.value;
+    const validaSenhas = (event: ChangeEvent<HTMLInputElement>) => {
         const rePass = event?.target.value;
-        if (password !== rePass) {
+
+        const password = document.getElementById(
+            "password"
+        ) as HTMLInputElement;
+
+        if (password.value !== rePass) {
             event?.target.setCustomValidity("As senha não são iguais!");
         } else {
             event?.target.setCustomValidity("");
@@ -33,7 +37,6 @@ export default function Page({
         event.preventDefault();
 
         const password = event.currentTarget["password"].value;
-        const re_pass = event.currentTarget["re_pass"].value;
 
         await axios({
             baseURL: `${process.env.BASE_URL_API}/changePass`,
