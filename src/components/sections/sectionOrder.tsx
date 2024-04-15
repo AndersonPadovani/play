@@ -1,5 +1,4 @@
 import SectionAddPizzaVariety from "./sectionAddPizzaVariety";
-import SectionCartItems from "./sectionCartItems";
 
 export default function SectionOrder() {
     return (
@@ -15,7 +14,6 @@ export default function SectionOrder() {
                     </p>
                 </div>
                 <SectionAddPizzaVariety />
-                <SectionCartItems />
             </div>
         </section>
     );

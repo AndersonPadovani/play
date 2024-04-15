@@ -1,19 +1,23 @@
-// cart.ts
+import { PizzaSectionEnum, PizzaSizeEnum } from "../enum/pizzaEnum";
+import { ProductType } from "./fakeApi";
 
-type CartItem = {
-    id: number;
+export type CartItemType = {
     quantity: number;
-    data: Record<string, any>; // Objeto que representa o item no carrinho
+    pizzaSize: PizzaSizeEnum;
+    pizzaSection: PizzaSectionEnum;
+    produto: ProductType[];
 };
 
 export class Cart {
     private static CART_KEY = "CARTSHOP";
 
-    private items: CartItem[];
+    public items: CartItemType[];
 
     constructor() {
-        // Carregando itens do localStorage
-        const storedCart = localStorage.getItem(Cart.CART_KEY);
+        let storedCart;
+        if (typeof window !== "undefined") {
+            storedCart = localStorage.getItem(Cart.CART_KEY);
+        }
         this.items = storedCart ? JSON.parse(storedCart) : [];
     }
 
@@ -21,31 +25,52 @@ export class Cart {
         localStorage.setItem(Cart.CART_KEY, JSON.stringify(this.items));
     }
 
-    addItem(item: CartItem["data"]) {
-        const existingItem = this.items.find(
-            (cartItem) => cartItem.id === item.id
-        );
-
-        if (existingItem) {
-            existingItem.quantity += 1;
+    addItem(order: CartItemType) {
+        // Verifica se o carrinho está vazio
+        if (this.items.length === 0) {
+            this.items.push(order);
         } else {
-            this.items.push({ id: item.id, quantity: 1, data: item });
+            let found = false;
+
+            // Itera sobre os itens existentes no carrinho
+            for (let i = 0; i < this.items.length; i++) {
+                const listItem = this.items[i];
+
+                // Verifica se os produtos são os mesmos
+                const sameProduct = listItem.produto.every((prod) =>
+                    order.produto.some((item) => item.name === prod.name)
+                );
+
+                // Verifica se o tamanho é o mesmo
+                const sameSize = listItem.pizzaSize === order.pizzaSize;
+
+                if (sameProduct) {
+                    if (sameSize) {
+                        // Se o produto e o tamanho forem iguais, incrementa a quantidade
+                        listItem.quantity += 1;
+                        found = true;
+                        break;
+                    }
+                }
+            }
+
+            // Se o produto não foi encontrado com o mesmo tamanho, adiciona como um novo pedido
+            if (!found) {
+                this.items.push(order);
+            }
         }
 
         this.saveToLocalStorage();
     }
 
-    removeItem(id: number) {
-        this.items = this.items.filter((item) => item.id !== id);
-        this.saveToLocalStorage();
-    }
-
-    getQuantidadeById(id: number): number {
-        const item = this.items.find((cartItem) => cartItem.id === id);
-        return item ? item.quantity : 0;
+    getCartLengh() {
+        return this.items.length;
     }
 
     getItems() {
-        return this.items.map((item) => item.data);
+        return this.items.map((cartItem) => ({
+            item: cartItem.produto,
+            quantity: cartItem.quantity,
+        }));
     }
 }

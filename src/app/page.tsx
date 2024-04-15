@@ -6,6 +6,8 @@ import SectionChoseVariety from "@/components/sections/sectionChoseVariety";
 import SectionOrder from "@/components/sections/sectionOrder";
 import SectionHeader from "@/components/sections/header";
 import SectionLanding from "@/components/sections/sectionLanding";
+import { ErrorBoundary } from "next/dist/client/components/error-boundary";
+import Error from "./error";
 
 export default function Pagina() {
     return (

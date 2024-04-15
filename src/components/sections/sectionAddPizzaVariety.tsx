@@ -1,133 +1,118 @@
 "use client";
-import { Label } from "@/components/ui/label";
-import { Button, Checkbox, CheckboxProps } from "@mui/material";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { PizzaIcon } from "lucide-react";
-import FakeApi from "@/app/utils/fakeApi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import ListVarietiCheck from "./listVarietiCheck";
+import { Button } from "@mui/material";
+import { PizzaSectionEnum, PizzaSizeEnum } from "@/app/enum/pizzaEnum";
 
-type sizePizzaType = {
-    size: string;
-    qtd: number;
+export type ProductCartType = {
+    pizzaSize: PizzaSizeEnum;
+    pizzaSection: PizzaSectionEnum;
     description: string;
 };
 
 export default function SectionAddPizzaVariety() {
-    const [checkedIds, setCheckedIds] = useState<string[]>([]);
-    const [sizePizza, setsizePizza] = useState<sizePizzaType>();
-
-    const handlerChecked = (checkBox: string) => {
-        if (checkedIds.includes(checkBox)) {
-            // Se o checkbox já está selecionado, desmarcar e removê-lo da lista
-            setCheckedIds((prevCheckedIds) =>
-                prevCheckedIds.filter((id) => id !== checkBox)
-            );
-        } else {
-            // Se o checkbox não está selecionado
-            const limitCheck = sizePizza?.qtd ? sizePizza.qtd : 2;
-            if (checkedIds.length === limitCheck) {
-                // Se já há 3 checkboxes selecionados, desmarcar o primeiro antes de adicionar o novo
-                setCheckedIds((prevCheckedIds) =>
-                    prevCheckedIds.slice(1).concat(checkBox)
-                );
-            } else {
-                // Se ainda não há 3 checkboxes selecionados, apenas adicionar o novo
-                setCheckedIds((prevCheckedIds) => [
-                    ...prevCheckedIds,
-                    checkBox,
-                ]);
-            }
-        }
-    };
-
-    const handlerApi = () => {
-        return FakeApi();
-    };
+    const [Pizza, setPizza] = useState<ProductCartType>();
 
     return (
-        <div className="mx-auto w-full space-y-2 bg-zinc-900/70 rounded-3xl p-8">
-            <div className="grid grid-cols-3 gap-2 p-2 ">
+        <div className="w-full space-y-2 bg-zinc-900/70 rounded-3xl p-8">
+            <h2 className="text-2xl text-zinc-300">
+                Primeiro selecione uma{" "}
+                <strong className="text-orange-600 uppercase">pizza</strong>
+            </h2>
+            <div className="grid grid-cols-5 gap-2 p-2 ">
                 <Button
-                    className="bg-zinc-600/70 rounded-none active:bg-zinc-700/80 text-lg font-bold gap-3 text-orange-600"
+                    className={`bg-zinc-600/70 ${
+                        Pizza?.pizzaSize === PizzaSizeEnum.pequena &&
+                        "bg-orange-600 text-zinc-300"
+                    } rounded-none text-lg font-bold gap-3 text-orange-600`}
                     onClick={() =>
-                        setsizePizza({
-                            size: "pequena",
-                            qtd: 2,
-                            description:
-                                "Pode escolher ate 2 tipos de sabores para Pizza Pequena",
+                        setPizza({
+                            pizzaSize: PizzaSizeEnum.pequena,
+                            pizzaSection: PizzaSectionEnum.pequena,
+                            description: `Pode escolher até ${PizzaSectionEnum.pequena} tipos de sabores para ${PizzaSizeEnum.pequena}`,
                         })
                     }
                 >
                     <PizzaIcon />
-                    Pequena
+                    {PizzaSizeEnum.pequena}
                 </Button>
                 <Button
-                    className="bg-zinc-600/70 rounded-none active:bg-zinc-700/80 text-lg font-bold gap-3 text-orange-600"
+                    className={`bg-zinc-600/70 ${
+                        Pizza?.pizzaSize === PizzaSizeEnum.media &&
+                        "bg-orange-600 text-zinc-300"
+                    } rounded-none text-lg font-bold gap-3 text-orange-600`}
                     onClick={() =>
-                        setsizePizza({
-                            size: "Media",
-                            qtd: 3,
-                            description:
-                                "Pode escolher ate 3 tipos de sabores para Pizza Media",
+                        setPizza({
+                            pizzaSize: PizzaSizeEnum.media,
+                            pizzaSection: PizzaSectionEnum.media,
+                            description: `Pode escolher até ${PizzaSectionEnum.media} tipos de sabores para ${PizzaSizeEnum.media}`,
                         })
                     }
                 >
                     <PizzaIcon />
-                    Media
+                    {PizzaSizeEnum.media}
                 </Button>
                 <Button
-                    className="bg-zinc-600/70 rounded-none active:bg-zinc-700/80 text-lg font-bold gap-3 text-orange-600"
+                    className={`bg-zinc-600/70 ${
+                        Pizza?.pizzaSize === PizzaSizeEnum.grande &&
+                        "bg-orange-600 text-zinc-300"
+                    } rounded-none text-lg font-bold gap-3 text-orange-600`}
                     onClick={() =>
-                        setsizePizza({
-                            size: "Grande",
-                            qtd: 4,
-                            description:
-                                "Pode escolher ate 4 tipos de sabores para Pizza Grande",
+                        setPizza({
+                            pizzaSize: PizzaSizeEnum.grande,
+                            pizzaSection: PizzaSectionEnum.grande,
+                            description: `Pode escolher até ${PizzaSectionEnum.grande} tipos de sabores para ${PizzaSizeEnum.grande}`,
                         })
                     }
                 >
                     <PizzaIcon />
-                    Grande
+                    {PizzaSizeEnum.grande}
+                </Button>
+                <Button
+                    className={`bg-zinc-600/70 ${
+                        Pizza?.pizzaSize === PizzaSizeEnum.gigante &&
+                        "bg-orange-600 text-zinc-300"
+                    } rounded-none text-lg font-bold gap-3 text-orange-600`}
+                    onClick={() =>
+                        setPizza({
+                            pizzaSize: PizzaSizeEnum.gigante,
+                            pizzaSection: PizzaSectionEnum.gigante,
+                            description: `Pode escolher até ${PizzaSectionEnum.gigante} tipos de sabores para ${PizzaSizeEnum.gigante}`,
+                        })
+                    }
+                >
+                    <PizzaIcon />
+                    {PizzaSizeEnum.gigante}
+                </Button>
+                <Button
+                    className={`bg-zinc-600/70 ${
+                        Pizza?.pizzaSize === PizzaSizeEnum.familia &&
+                        "bg-orange-600 text-zinc-300"
+                    } rounded-none text-lg font-bold gap-3 text-orange-600`}
+                    onClick={() =>
+                        setPizza({
+                            pizzaSize: PizzaSizeEnum.familia,
+                            pizzaSection: PizzaSectionEnum.familia,
+                            description: `Pode escolher até ${PizzaSectionEnum.familia} tipos de sabores para ${PizzaSizeEnum.familia}`,
+                        })
+                    }
+                >
+                    <PizzaIcon />
+                    {PizzaSizeEnum.familia}
                 </Button>
             </div>
 
             <div className="flex w-full p-8 flex-col gap-5">
-                <h1 className="text-orange-600">
-                    {sizePizza?.description
-                        ? sizePizza.description
-                        : "Pode escolher ate 2 tipos de sabores para Pizza Pequena"}
-                </h1>
-                <RadioGroup
-                    defaultValue="option-one"
-                    className="grid grid-cols-5 gap-4"
-                >
-                    {handlerApi().pizza.map((pizza) => {
-                        return (
-                            <div
-                                key={pizza.id}
-                                className="flex items-center space-x-2"
-                            >
-                                <Checkbox
-                                    id={pizza.id.toString()}
-                                    checked={checkedIds.includes(
-                                        pizza.id.toString()
-                                    )}
-                                    onChange={() =>
-                                        handlerChecked(pizza.id.toString())
-                                    }
-                                />
-
-                                <Label className="text-lg" htmlFor={pizza.id}>
-                                    {pizza.name}
-                                </Label>
-                            </div>
-                        );
-                    })}
-                </RadioGroup>
+                <h1 className="text-orange-600">{Pizza?.description}</h1>
+                {Pizza && (
+                    <ListVarietiCheck
+                        pizzaSize={Pizza.pizzaSize}
+                        pizzaSection={Pizza.pizzaSection}
+                        description={Pizza.description}
+                    />
+                )}
             </div>
-            <Button className="bg-orange-500/30 w-full text-xl font-bold text-zinc-300 hover:bg-orange-500/90">
-                Adcionar Pizza ao carrinho
-            </Button>
         </div>
     );
 }
